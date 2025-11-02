@@ -1,0 +1,9 @@
+{
+  "uuid": "ultra-wide@sdotkim",
+  "name": "UltraWide",
+  "description": "Move the mouse cursor along the monitor using keyboard shortcut.",
+  "version": 1,
+  "shell-version": ["48"],
+  "url": "https://github.com/sdotkim/hb-ultra-wide",
+  "settings-schema": "org.gnome.shell.extensions.ultra-wide"
+}
