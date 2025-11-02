@@ -31,4 +31,4 @@ ext.deploy: ext.schema
 
 
 ext.schema:
-	glib-compile-schemas extension/schema
+	glib-compile-schemas extension/schemas
