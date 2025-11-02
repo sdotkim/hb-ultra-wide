@@ -6,8 +6,8 @@ After=graphical-session.target
 Type=simple
 ExecStart=%h/.local/bin/ydotoold \
     --socket-path=%t/.ydotool_socket \
-    --socket-own=%u:%G \
-    --socket-perm=0660
+    --socket-perm=0660 \
+    --socket-keep-owner
 
 Restart=on-failure
 

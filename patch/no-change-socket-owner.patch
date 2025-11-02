@@ -1,0 +1,56 @@
+diff --git a/Daemon/ydotoold.c b/Daemon/ydotoold.c
+index de09904..e14e4b1 100644
+--- a/Daemon/ydotoold.c
++++ b/Daemon/ydotoold.c
+@@ -36,6 +36,7 @@
+
+ #include <assert.h>
+ #include <stdbool.h>
++#include <stdint.h>
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <string.h>
+@@ -73,6 +74,7 @@
+ static char opt_socket_path[SOCKET_PATH_LEN] = "/tmp/.ydotool_socket";
+ static char opt_socket_perm[16] = "0600";
+ static char opt_socket_own[16] = "";
++static bool opt_socket_keep_owner = false;
+
+ static void show_help() {
+ 	puts(
+@@ -83,6 +85,7 @@ static void show_help() {
+ 		"  -p, --socket-path=PATH     Custom socket path\n"
+ 		"  -P, --socket-perm=PERM     Socket permission (default 0600)\n"
+ 		"  -o, --socket-own=UID:GID   Socket ownership\n"
++		"  -K, --socket-keep-owner    Do not change socket ownership\n"
+ 		"  -m, --mouse-off            Disable mouse (EV_REL)\n"
+ 		"  -k, --keyboard-off         Disable keyboard (EV_KEY)\n"
+ 		"  -T, --touch-on             Enable touchscreen (EV_ABS)\n"
+@@ -189,6 +192,7 @@ int main(int argc, char **argv) {
+ 			{"version", no_argument, 0, 'V'},
+ 			{"socket-perm", required_argument, 0, 'P'},
+ 			{"socket-own", required_argument, 0, 'o'},
++			{"socket-keep-owner", no_argument, NULL, 'K'},
+ 			{"socket-path", required_argument, 0, 'p'},
+ 			{"mouse-off", no_argument, 0, 'm'},
+ 			{"keyboard-off", no_argument, 0, 'k'},
+@@ -227,6 +231,10 @@ int main(int argc, char **argv) {
+ 				strncpy(opt_socket_own, optarg, sizeof(opt_socket_perm)-1);
+ 				break;
+
++			case 'K':
++				opt_socket_keep_owner = true;
++				break;
++
+ 			case 'm':
+ 				opt_ui_setup &= ~ENABLE_REL;
+ 				break;
+@@ -329,7 +337,7 @@ int main(int argc, char **argv) {
+
+ 	printf("Socket permission: %s\n", opt_socket_perm);
+
+-	if (opt_socket_own[0]) {
++	if (!opt_socket_keep_owner && opt_socket_own[0]) {
+ 		char *gid_pos = strchr(opt_socket_own, ':');
+
+ 		if (!gid_pos) {

@@ -23,6 +23,18 @@ RUN git clone https://github.com/ReimuNotMoe/ydotool.git
 
 WORKDIR /src/ydotool
 
+# Pin to a commit and apply patch
+RUN git checkout b0c5da3cc1fcfcf3a20fa0c184f721d386945b6a
+
+# break cache intentionally
+ARG CACHE_BUSTER
+
+COPY patch/no-change-socket-owner.patch .
+# RUN git apply --verbose no-change-socket-owner.patch
+RUN echo ">>> PATCHING IN $(pwd)" && ls -al && git apply --verbose no-change-socket-owner.patch
+
+
+
 # Configure build using CMake
 RUN mkdir build \
     && cd build \
