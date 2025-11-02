@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schemalist>
   <schema id="org.gnome.shell.extensions.ultra-wide" path="/org/gnome/shell/extensions/ultra-wide/">
-    <key name="cursor-scroll-hotkey" type="s">
-      <default>"&lt;Control&gt;&lt;Super&gt;m"</default>
+    <key type="as" name="cursor-scroll-hotkey">
+      <default><![CDATA[['<Super><Control><Alt><Shift>n']]]></default>
       <summary>Hotkey to activate cursor-scroll mode</summary>
       <description>Keyboard shortcut that activates scroll-to-move-cursor mode.</description>
+    </key>
+    <key type="i" name="display-zones">
+      <default>3</default>
+      <summary>Number of zones to split display into.</summary>
     </key>
   </schema>
 </schemalist>
