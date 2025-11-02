@@ -1,0 +1,43 @@
+# ------------------------------------------------------------
+# Build ydotool from source using Fedora Linux 42 base image
+# ------------------------------------------------------------
+FROM fedora:42 AS build
+
+# Install dependencies and development tools
+RUN dnf -y upgrade \
+    && dnf -y install \
+       git \
+       cmake \
+       make \
+       gcc \
+       gcc-c++ \
+       libevdev-devel \
+       systemd-devel \
+       scdoc \
+    && dnf clean all
+
+WORKDIR /src
+
+# Clone upstream ydotool
+RUN git clone https://github.com/ReimuNotMoe/ydotool.git
+
+WORKDIR /src/ydotool
+
+# Configure build using CMake
+RUN mkdir build \
+    && cd build \
+    && cmake .. \
+       -DBUILD_DOCS=OFF \
+       -DSYSTEMD_USER_SERVICE=OFF \
+       -DSYSTEMD_SYSTEM_SERVICE=OFF \
+       -DOPENRC=OFF \
+    && make -j$(nproc)
+
+# ------------------------------------------------------------
+# Output stage
+# ------------------------------------------------------------
+FROM scratch AS output
+
+COPY --from=build /src/ydotool/build/ydotool /out/ydotool
+
+CMD ["/out/ydotool"]
