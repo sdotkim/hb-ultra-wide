@@ -6,7 +6,7 @@ let settings;
 let scrollSignal;
 
 function init() {
-    settings = new Gio.Settings({ schema: 'org.gnome.shell.extensions.cursorwheel' });
+    settings = new Gio.Settings({ schema: 'org.gnome.shell.extensions.ultra-wide' });
 }
 
 function enable() {
@@ -29,10 +29,10 @@ function enterScrollMode() {
 
     scrollSignal = global.stage.connect('scroll-event', (actor, event) => {
         handleScroll(event);
-        return Clutter.EVENT_STOP;
+        return Clutter.EVENT_STOP; // prevent propagation
     });
 
-    // Optional: auto-exit after 5 seconds
+    // auto-exit after 5 seconds
     GLib.timeout_add_seconds(GLib.PRIORITY_DEFAULT, 5, () => {
         exitScrollMode();
         return GLib.SOURCE_REMOVE;
@@ -51,9 +51,9 @@ function handleScroll(event) {
     const direction = event.get_scroll_direction();
 
     if (direction === Clutter.ScrollDirection.UP) {
-        moveCursor(delta, 0); // right
+        moveCursor(delta, 0); // move right
     } else if (direction === Clutter.ScrollDirection.DOWN) {
-        moveCursor(-delta, 0); // left
+        moveCursor(-delta, 0); // move left
     }
 }
 
