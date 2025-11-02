@@ -2,7 +2,7 @@
 <schemalist>
   <schema id="org.gnome.shell.extensions.ultra-wide" path="/org/gnome/shell/extensions/ultra-wide/">
     <key name="cursor-scroll-hotkey" type="s">
-      <default>"<Control><Super>m"</default>
+      <default>"&lt;Control&gt;&lt;Super&gt;m"</default>
       <summary>Hotkey to activate cursor-scroll mode</summary>
       <description>Keyboard shortcut that activates scroll-to-move-cursor mode.</description>
     </key>
