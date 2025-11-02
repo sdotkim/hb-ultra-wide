@@ -1,0 +1,28 @@
+[Unit]
+Description=ydotoold per-user daemon
+After=graphical-session.target
+
+[Service]
+Type=simple
+ExecStart=%h/.local/bin/ydotoold \
+    --socket-path=%t/.ydotool_socket \
+    --socket-own=%u:%G \
+    --socket-perm=0660
+
+Restart=on-failure
+
+# --- Effective sandboxing for user units ---
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectClock=yes
+ProtectHostname=yes
+ProtectProc=invisible
+RestrictAddressFamilies=AF_UNIX     # blocks all internet
+SystemCallFilter=~@mount @module @reboot @swap @clock
+SystemCallFilter=~bpf ptrace
+
+# Optional reload
+ExecReload=/usr/bin/kill -HUP $MAINPID
+
+[Install]
+WantedBy=default.target
