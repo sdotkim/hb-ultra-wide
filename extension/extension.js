@@ -1,10 +1,7 @@
 import GLib from "gi://GLib";
-import Clutter from "gi://Clutter";
 import Meta from "gi://Meta";
 import Shell from "gi://Shell";
 import * as Main from "resource:///org/gnome/shell/ui/main.js";
-// import Gio from "gi://Gio";
-// import Util from "resource:///org/gnome/shell/util.js";
 import { Extension } from "resource:///org/gnome/shell/extensions/extension.js";
 
 let home = GLib.get_home_dir();
@@ -34,13 +31,20 @@ export default class UltraWide extends Extension {
         this.#mw = mw;
         this.#zones = this.settings.get_int("display-zones");
 
-        // Register keybinding
+        // Register keybindings
         Main.wm.addKeybinding(
-            "cursor-scroll-hotkey",
+            "cursor-move-left",
             this.settings,
             Meta.KeyBindingFlags.NONE,
             Shell.ActionMode.NORMAL,
-            this.enterScrollMode.bind(this)
+            this.kb.bind(this, -1)
+        );
+        Main.wm.addKeybinding(
+            "cursor-move-right",
+            this.settings,
+            Meta.KeyBindingFlags.NONE,
+            Shell.ActionMode.NORMAL,
+            this.kb.bind(this, 1)
         );
     }
 
@@ -51,35 +55,9 @@ export default class UltraWide extends Extension {
         this.exitScrollMode();
     }
 
-    enterScrollMode() {
-        if (this.#scrollSignal) return; // already active
-
-        this.#scrollSignal = global.stage.connect("scroll-event", this.handleScroll.bind(this));
-
-        // Auto-exit after 5 seconds
-        GLib.timeout_add_seconds(GLib.PRIORITY_DEFAULT, 5, () => {
-            this.exitScrollMode();
-            return GLib.SOURCE_REMOVE;
-        });
-    }
-
-    exitScrollMode() {
-        if (this.#scrollSignal) {
-            global.stage.disconnect(this.#scrollSignal);
-            this.#scrollSignal = null;
-        }
-    }
-
-    handleScroll(actor, event) {
-        if (event.type() !== Clutter.EventType.SCROLL) return Clutter.EVENT_STOP;
-
-        const scrollDirection = event.get_scroll_direction()
-        if (scrollDirection == Clutter.ScrollDirection.SMOOTH) return Clutter.EVENT_STOP;
-
-        const position = this.getNewPosition(scrollDirection? -1: 1)
+    kb(direction) {
+        const position = this.getNewPosition(direction)
         this.moveCursor(...position);
-
-        return Clutter.EVENT_STOP;
     }
 
     getNewPosition(direction) {
