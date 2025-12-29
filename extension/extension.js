@@ -51,8 +51,8 @@ export default class UltraWide extends Extension {
     disable() {
         if (!Main.wm) return;
 
-        Main.wm.removeKeybinding("cursor-scroll-hotkey");
-        this.exitScrollMode();
+        Main.wm.removeKeybinding("cursor-move-left");
+        Main.wm.removeKeybinding("cursor-move-right");
     }
 
     kb(direction) {
